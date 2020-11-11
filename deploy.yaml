@@ -1,0 +1,43 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    app: testmsi
+  name: testmsi
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: testmsi
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: testmsi
+    spec:
+      containers:
+      - image: acraccess.azurecr.io/nptester
+        name: nptester
+        resources: 
+          requests:
+            cpu: 1
+            memory: 1Gi
+          limits:
+            cpu: 1
+            memory: 1Gi
+        env:
+        - name: "AzureServicesAuthConnectionString"
+          value: "RunAs=App; AppId=e8e422cc-2bb7-4d06-ba43-cff38b07a026"
+        - name: "DbConnection"
+          value: "Server=cdctests.database.windows.net,1433;Database=cdcKafka;UID=e8e422cc-2bb7-4d06-ba43-cff38b07a026;Authentication=Active Directory Interactive"
+      nodeSelector:
+        agentpool: win
+      tolerations:
+        - key: "os"
+          operator: "Equal"
+          value: "windows"
+          effect: "NoSchedule"
+
+status: {}
